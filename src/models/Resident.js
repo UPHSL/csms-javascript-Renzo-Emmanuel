@@ -16,7 +16,9 @@ export class Resident {
    * Create a new Resident instance.
    *
    * @param {object} residentInfo - The resident information.
-   * @param {string} residentInfo.id - Unique identifier (UUID).
+   * @param {number|string|null} [residentInfo.id] - Unique identifier.
+   *   Defaults to null so a newly created Resident has no identifier
+   *   until the persistence layer assigns one.
    * @param {string} residentInfo.firstName - Resident's first name.
    * @param {string} residentInfo.lastName - Resident's last name.
    * @param {string} residentInfo.address - Resident's address.
@@ -24,7 +26,7 @@ export class Resident {
    * @param {string} residentInfo.email - Resident's email address.
    * @param {string} residentInfo.status - Resident status.
    */
-  constructor({ id, firstName, lastName, address, contactNumber, email, status }) {
+  constructor({ id = null, firstName, lastName, address, contactNumber, email, status }) {
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
