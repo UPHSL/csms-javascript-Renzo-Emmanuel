@@ -6,8 +6,8 @@
 
 ## Developer Information
 
-- **Name:** <!-- TODO: your full name -->
-- **GitHub Username:** <!-- TODO: your GitHub username -->
+- **Name:** Renzo Emmanuel V. Ramos
+- **GitHub Username:** Renzo-Emmanuel
 - **Primary Technology Stack:** JavaScript with Express.js
 - **T03 Branch:** feature/t03-resident-persistence
 
