@@ -87,6 +87,43 @@ export class ResidentRepository {
   }
 
   /**
+   * Retrieve all persisted Residents ordered by last name, first name, then id.
+   *
+   * @returns {Resident[]} All stored Residents in deterministic order.
+   */
+  findAll() {
+    const statement = this.connection.prepare(
+      `SELECT id, first_name, last_name, address, contact_number, email, status
+         FROM residents
+        ORDER BY LOWER(last_name) ASC, LOWER(first_name) ASC, id ASC`
+    );
+
+    return statement.all().map(row => this.#mapRowToResident(row));
+  }
+
+  /**
+   * Search Residents by partial, case-insensitive first or last name.
+   *
+   * The search is performed entirely at the database level using a
+   * parameterized LIKE query. No in-memory filtering is done.
+   *
+   * @param {string} term - The trimmed, non-blank search term.
+   * @returns {Resident[]} Matching Residents in deterministic order.
+   */
+  findByName(term) {
+    const pattern = `%${term}%`;
+    const statement = this.connection.prepare(
+      `SELECT DISTINCT id, first_name, last_name, address, contact_number, email, status
+         FROM residents
+        WHERE LOWER(first_name) LIKE LOWER(?)
+           OR LOWER(last_name) LIKE LOWER(?)
+        ORDER BY LOWER(last_name) ASC, LOWER(first_name) ASC, id ASC`
+    );
+
+    return statement.all(pattern, pattern).map(row => this.#mapRowToResident(row));
+  }
+
+  /**
    * Close the underlying database connection.
    *
    * Useful for releasing the SQLite file, especially in tests that create
