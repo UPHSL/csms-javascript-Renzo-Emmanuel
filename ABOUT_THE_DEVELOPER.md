@@ -5,16 +5,16 @@ Complete this file during Sprint 0.
 ## Student Information
 
 **Full Name:**  
-`Enter your full name`
+Renzo Emmanuel V. Ramos
 
 **Student Number:**  
-`Enter your student number`
+23-1611-200
 
 **Section:**  
-`Enter your section`
+J4A
 
 **GitHub Username:**  
-`Enter your GitHub username`
+Renzo-Emmanuel
 
 **Primary Technology Stack:**  
 JavaScript with Express.js
@@ -23,30 +23,30 @@ JavaScript with Express.js
 
 Briefly describe your current programming experience.
 
-`Write your answer here.`
+I have worked on multiple programming projects and have become familiar with programming concepts. I would not consider myself an expert yet, but I am comfortable with programming and can learn and adapt when working on new projects.
 
 ## Learning Goal
 
 What do you want to learn or improve during this course?
 
-`Write your answer here.`
+I want to improve my programming skills, especially in writing cleaner and more organized code. I also want to learn better programming practices and become more confident when working on larger projects.
 
 ## Development Environment
 
 **Operating System:**  
-`Enter your operating system`
+Microsoft Windows
 
 **Node.js Version:**  
-`Enter the output of node --version`
+v24.15.0
 
 **npm Version:**  
-`Enter the output of npm --version`
+11.12.1
 
 **VS Code Installed:**  
-`Yes or No`
+Yes
 
 ## Academic Integrity Confirmation
 
-- [ ] I completed this profile using my own information.
-- [ ] I understand that I must be able to explain all work I submit.
-- [ ] I will disclose outside and AI assistance when required.
+- [/] I completed this profile using my own information.
+- [/] I understand that I must be able to explain all work I submit.
+- [/] I will disclose outside and AI assistance when required.
