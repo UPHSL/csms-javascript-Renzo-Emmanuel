@@ -124,6 +124,37 @@ export class ResidentRepository {
   }
 
   /**
+   * Update the permitted fields of an existing Resident.
+   *
+   * Only firstName, lastName, address, contactNumber, and email are
+   * modified. The id and status columns are never touched by this method.
+   * The UPDATE is bounded by WHERE id = ? so only the targeted Resident
+   * row is affected.
+   *
+   * @param {Resident} resident - The Resident carrying the updated values
+   *   and the existing id.
+   * @returns {Resident} The updated Resident as read back from persistence.
+   */
+  update(resident) {
+    const statement = this.connection.prepare(
+      `UPDATE residents
+          SET first_name = ?, last_name = ?, address = ?, contact_number = ?, email = ?
+        WHERE id = ?`
+    );
+
+    statement.run(
+      resident.firstName,
+      resident.lastName,
+      resident.address,
+      resident.contactNumber,
+      resident.email,
+      resident.id
+    );
+
+    return this.findById(resident.id);
+  }
+
+  /**
    * Close the underlying database connection.
    *
    * Useful for releasing the SQLite file, especially in tests that create
