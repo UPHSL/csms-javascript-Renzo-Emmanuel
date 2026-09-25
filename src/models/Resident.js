@@ -10,6 +10,7 @@ export class Resident {
    */
   static Status = {
     ACTIVE: "Active",
+    INACTIVE: "Inactive",
   };
 
   /**

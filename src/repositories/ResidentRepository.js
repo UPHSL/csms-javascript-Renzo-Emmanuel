@@ -155,6 +155,28 @@ export class ResidentRepository {
   }
 
   /**
+   * Deactivate an existing Resident by setting their status to Inactive.
+   *
+   * Only the status column is changed. All other fields remain untouched.
+   * The UPDATE is bounded by WHERE id = ? so only the targeted Resident
+   * row is affected. No record is deleted or inserted.
+   *
+   * @param {number} residentId - The ID of the Resident to deactivate.
+   * @returns {Resident} The updated Resident as read back from persistence.
+   */
+  deactivateById(residentId) {
+    const statement = this.connection.prepare(
+      `UPDATE residents
+          SET status = 'Inactive'
+        WHERE id = ?`
+    );
+
+    statement.run(residentId);
+
+    return this.findById(residentId);
+  }
+
+  /**
    * Close the underlying database connection.
    *
    * Useful for releasing the SQLite file, especially in tests that create
