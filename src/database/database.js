@@ -48,6 +48,29 @@ const CREATE_RESIDENTS_TABLE = `
 `;
 
 /**
+ * SQL that creates the ServiceRequest table only when it does not already exist.
+ *
+ * Design notes:
+ * - resident_id references the Resident who submitted the request but is
+ *   stored as a plain INTEGER (no FOREIGN KEY constraint) to keep the schema
+ *   simple for this stage of the project.
+ * - date_requested is stored as TEXT in YYYY-MM-DD format; no date type is
+ *   needed because SQLite has no native DATE column type.
+ * - status is stored as TEXT and starts as "Pending" for every new request.
+ * - "IF NOT EXISTS" keeps initialization safe and repeatable.
+ */
+const CREATE_SERVICE_REQUESTS_TABLE = `
+  CREATE TABLE IF NOT EXISTS service_requests (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    resident_id INTEGER NOT NULL,
+    service_type TEXT NOT NULL,
+    description TEXT NOT NULL,
+    date_requested TEXT NOT NULL,
+    status TEXT NOT NULL
+  )
+`;
+
+/**
  * Open a connection to the SQLite database at the given path and ensure
  * the Resident table exists.
  *
@@ -65,6 +88,7 @@ export function createConnection(databasePath = DEFAULT_DATABASE_PATH) {
 
   // Ensure the schema exists. Safe to run every time a connection opens.
   connection.exec(CREATE_RESIDENTS_TABLE);
+  connection.exec(CREATE_SERVICE_REQUESTS_TABLE);
 
   return connection;
 }
