@@ -28,6 +28,12 @@ temp/
 *.seed
 *.pid.lock
 
+# SQLite database files (runtime data - must not be committed)
+data/
+*.db
+*.sqlite
+*.sqlite3
+
 # IDE settings
 .vscode/
 .idea/
