@@ -7,9 +7,17 @@
 export class ServiceRequest {
   /**
    * Possible ServiceRequest status values.
+   *
+   * PENDING     — initial state; every new request starts here.
+   * IN_PROGRESS — request is being actively processed by staff.
+   * COMPLETED   — request has been fulfilled; terminal state.
+   * CANCELLED   — request was withdrawn or rejected; terminal state.
    */
   static Status = {
     PENDING: "Pending",
+    IN_PROGRESS: "In Progress",
+    COMPLETED: "Completed",
+    CANCELLED: "Cancelled",
   };
 
   /**

@@ -84,6 +84,33 @@ export class ServiceRequestRepository {
   }
 
   /**
+   * Update the status of an existing ServiceRequest.
+   *
+   * The repository's only responsibility here is executing the SQL. It does
+   * NOT decide whether the transition is valid — that belongs in
+   * ServiceRequestStatusService. The caller must ensure the transition is
+   * allowed before invoking this method.
+   *
+   * @param {number} id - The id of the ServiceRequest to update.
+   * @param {string} status - The new status value to persist.
+   * @returns {ServiceRequest|null} The updated ServiceRequest as read back
+   *   from the database, or null if no row with that id exists.
+   */
+  updateStatus(id, status) {
+    const statement = this.connection.prepare(
+      `UPDATE service_requests
+          SET status = ?
+        WHERE id = ?`
+    );
+
+    statement.run(status, id);
+
+    // Read the row back so the caller always receives a fully mapped
+    // ServiceRequest rather than having to call findById separately.
+    return this.findById(id);
+  }
+
+  /**
    * Close the underlying database connection.
    *
    * Useful for releasing the SQLite file, especially in tests that create
