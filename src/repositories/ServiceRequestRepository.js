@@ -1,5 +1,5 @@
 /**
- * Persistence layer for ServiceRequest records (T09).
+ * Persistence layer for ServiceRequest records (T09, T10, T11).
  *
  * Responsibility: store and retrieve ServiceRequest data using the same
  * file-backed SQLite database as ResidentRepository. This class does NOT
@@ -10,6 +10,13 @@
  * The repository is given a database file path. It opens its own
  * connection through the shared database module, which also ensures both
  * the "residents" and "service_requests" tables exist before use.
+ *
+ * T11 adds two read-only query methods:
+ *   findAll()            — list every persisted ServiceRequest in
+ *                          deterministic order (dateRequested DESC, id DESC).
+ *   search(term, status) — filter by partial text and/or status at the
+ *                          database level; never loads all rows into memory
+ *                          for application-side filtering.
  */
 
 import { createConnection, DEFAULT_DATABASE_PATH } from "../database/database.js";
@@ -108,6 +115,93 @@ export class ServiceRequestRepository {
     // Read the row back so the caller always receives a fully mapped
     // ServiceRequest rather than having to call findById separately.
     return this.findById(id);
+  }
+
+  /**
+   * Retrieve all persisted ServiceRequests in deterministic order.
+   *
+   * Results are ordered by dateRequested DESC first so newer requests
+   * appear before older ones. When two requests share the same date, the
+   * one with the higher id appears first (id DESC). This ordering applies
+   * consistently to listing, searching, and filtering results.
+   *
+   * @returns {ServiceRequest[]} All stored ServiceRequests in required order.
+   *   Returns an empty array when no records exist — never null.
+   */
+  findAll() {
+    const statement = this.connection.prepare(
+      `SELECT id, resident_id, service_type, description, date_requested, status
+         FROM service_requests
+        ORDER BY date_requested DESC, id DESC`
+    );
+
+    return statement.all().map(row => this.#mapRowToServiceRequest(row));
+  }
+
+  /**
+   * Search and/or filter persisted ServiceRequests at the database level.
+   *
+   * Text search covers serviceType and description only (OR match).
+   * A partial, case-insensitive LIKE query is used so "clear" matches
+   * "Barangay Clearance". SELECT DISTINCT prevents a request that matches
+   * both fields from appearing more than once.
+   *
+   * When term is a non-blank string, the WHERE clause includes the text
+   * condition. When status is also provided, an AND status = ? clause is
+   * appended. When only status is provided (term is blank), only the
+   * status filter applies. At least one of term or status must be non-blank
+   * before calling this method — a caller that wants all records should
+   * use findAll() instead.
+   *
+   * All filtering and ordering happen inside SQLite; no application-side
+   * array filtering is performed.
+   *
+   * @param {string} term   - Trimmed, possibly blank search term.
+   * @param {string} status - Exact status value to filter by, or empty
+   *   string / null / undefined for no status filter.
+   * @returns {ServiceRequest[]} Matching ServiceRequests in required order.
+   *   Returns an empty array when no records match — never null.
+   */
+  search(term, status) {
+    const hasText   = term   !== "" && term   != null;
+    const hasStatus = status !== "" && status != null;
+
+    let sql;
+    let params;
+
+    if (hasText && hasStatus) {
+      // Both text search and status filter active.
+      const pattern = `%${term}%`;
+      sql =
+        `SELECT DISTINCT id, resident_id, service_type, description, date_requested, status
+           FROM service_requests
+          WHERE (LOWER(service_type) LIKE LOWER(?) OR LOWER(description) LIKE LOWER(?))
+            AND status = ?
+          ORDER BY date_requested DESC, id DESC`;
+      params = [pattern, pattern, status];
+
+    } else if (hasText) {
+      // Text search only; all statuses included.
+      const pattern = `%${term}%`;
+      sql =
+        `SELECT DISTINCT id, resident_id, service_type, description, date_requested, status
+           FROM service_requests
+          WHERE LOWER(service_type) LIKE LOWER(?) OR LOWER(description) LIKE LOWER(?)
+          ORDER BY date_requested DESC, id DESC`;
+      params = [pattern, pattern];
+
+    } else {
+      // Status filter only; no text restriction.
+      sql =
+        `SELECT id, resident_id, service_type, description, date_requested, status
+           FROM service_requests
+          WHERE status = ?
+          ORDER BY date_requested DESC, id DESC`;
+      params = [status];
+    }
+
+    const statement = this.connection.prepare(sql);
+    return statement.all(...params).map(row => this.#mapRowToServiceRequest(row));
   }
 
   /**
