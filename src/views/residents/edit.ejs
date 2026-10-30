@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Resident - CSMS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="main-nav">
+    <span class="nav-brand">CSMS</span>
+    <div class="nav-links">
+      <a href="/residents" class="nav-link nav-link-active">Residents</a>
+      <a href="/service-requests" class="nav-link">Service Requests</a>
+    </div>
+  </nav>
+
+  <main class="page-container">
+    <div class="page-header">
+      <div>
+        <p class="label">Community Services Management System</p>
+        <h1>Edit Resident</h1>
+      </div>
+      <a href="/residents" class="btn btn-secondary">Back to Resident Management</a>
+    </div>
+
+    <% if (errors.length > 0) { %>
+      <div class="alert alert-error" role="alert">
+        <strong>Please correct the following errors:</strong>
+        <ul class="error-list">
+          <% errors.forEach(function(field) { %>
+            <li><%= ({
+              firstName: 'First name is required.',
+              lastName: 'Last name is required.',
+              address: 'Address is required.',
+              contactNumber: 'Contact number must follow the format 09XXXXXXXXX.',
+              email: 'Email address is invalid.',
+              status: 'Status is invalid.'
+            })[field] || (field + ' is invalid.') %></li>
+          <% }); %>
+        </ul>
+      </div>
+    <% } %>
+
+    <section class="card">
+      <div class="readonly-fields">
+        <div class="readonly-item">
+          <span class="readonly-label">Resident ID</span>
+          <span class="readonly-value"><%= resident.id %></span>
+        </div>
+        <div class="readonly-item">
+          <span class="readonly-label">Status</span>
+          <span class="badge badge-<%= resident.status === 'Active' ? 'active' : 'inactive' %>">
+            <%= resident.status %>
+          </span>
+        </div>
+      </div>
+
+      <form method="POST" action="/residents/<%= resident.id %>/edit" novalidate>
+        <div class="form-group">
+          <label for="firstName" class="form-label">First Name</label>
+          <input
+            type="text"
+            id="firstName"
+            name="firstName"
+            value="<%= formData.firstName || '' %>"
+            class="form-input<%= errors.includes('firstName') ? ' input-error' : '' %>"
+            autocomplete="given-name"
+          >
+          <% if (errors.includes('firstName')) { %>
+            <span class="field-error">First name is required.</span>
+          <% } %>
+        </div>
+
+        <div class="form-group">
+          <label for="lastName" class="form-label">Last Name</label>
+          <input
+            type="text"
+            id="lastName"
+            name="lastName"
+            value="<%= formData.lastName || '' %>"
+            class="form-input<%= errors.includes('lastName') ? ' input-error' : '' %>"
+            autocomplete="family-name"
+          >
+          <% if (errors.includes('lastName')) { %>
+            <span class="field-error">Last name is required.</span>
+          <% } %>
+        </div>
+
+        <div class="form-group">
+          <label for="address" class="form-label">Address</label>
+          <input
+            type="text"
+            id="address"
+            name="address"
+            value="<%= formData.address || '' %>"
+            class="form-input<%= errors.includes('address') ? ' input-error' : '' %>"
+            autocomplete="street-address"
+          >
+          <% if (errors.includes('address')) { %>
+            <span class="field-error">Address is required.</span>
+          <% } %>
+        </div>
+
+        <div class="form-group">
+          <label for="contactNumber" class="form-label">Contact Number</label>
+          <input
+            type="text"
+            id="contactNumber"
+            name="contactNumber"
+            value="<%= formData.contactNumber || '' %>"
+            class="form-input<%= errors.includes('contactNumber') ? ' input-error' : '' %>"
+            placeholder="09XXXXXXXXX"
+            autocomplete="tel"
+          >
+          <% if (errors.includes('contactNumber')) { %>
+            <span class="field-error">Contact number must follow the format 09XXXXXXXXX.</span>
+          <% } %>
+        </div>
+
+        <div class="form-group">
+          <label for="email" class="form-label">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value="<%= formData.email || '' %>"
+            class="form-input<%= errors.includes('email') ? ' input-error' : '' %>"
+            autocomplete="email"
+          >
+          <% if (errors.includes('email')) { %>
+            <span class="field-error">Email address is invalid.</span>
+          <% } %>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+          <a href="/residents" class="btn btn-secondary">Cancel</a>
+        </div>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

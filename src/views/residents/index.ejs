@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resident Management - CSMS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="main-nav">
+    <span class="nav-brand">CSMS</span>
+    <div class="nav-links">
+      <a href="/residents" class="nav-link nav-link-active">Residents</a>
+      <a href="/service-requests" class="nav-link">Service Requests</a>
+    </div>
+  </nav>
+
+  <main class="page-container">
+    <div class="page-header">
+      <div>
+        <p class="label">Community Services Management System</p>
+        <h1>Resident Management</h1>
+      </div>
+      <a href="/residents/new" class="btn btn-primary">Register Resident</a>
+    </div>
+
+    <% if (successMessage) { %>
+      <div class="alert alert-success" role="alert">
+        <%= successMessage %>
+      </div>
+    <% } %>
+
+    <section class="card">
+      <form method="GET" action="/residents" class="search-form">
+        <div class="search-group">
+          <label for="q" class="search-label">Search by name</label>
+          <div class="search-row">
+            <input
+              type="text"
+              id="q"
+              name="q"
+              value="<%= searchTerm %>"
+              placeholder="Enter first or last name..."
+              class="form-input"
+            >
+            <button type="submit" class="btn btn-secondary">Search</button>
+            <% if (searchTerm) { %>
+              <a href="/residents" class="btn btn-link">Clear</a>
+            <% } %>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <% if (residents.length === 0) { %>
+        <p class="empty-message">No Residents found.</p>
+      <% } else { %>
+        <div class="table-wrapper">
+          <table class="residents-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Contact Number</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% residents.forEach(function(resident) { %>
+                <tr>
+                  <td><%= resident.id %></td>
+                  <td><%= resident.firstName %> <%= resident.lastName %></td>
+                  <td><%= resident.address %></td>
+                  <td><%= resident.contactNumber %></td>
+                  <td><%= resident.email %></td>
+                  <td>
+                    <span class="badge badge-<%= resident.status === 'Active' ? 'active' : 'inactive' %>">
+                      <%= resident.status %>
+                    </span>
+                  </td>
+                  <td class="actions-cell">
+                    <a href="/residents/<%= resident.id %>/edit" class="btn btn-sm btn-secondary">Edit</a>
+                    <% if (resident.status === 'Active') { %>
+                      <form
+                        method="POST"
+                        action="/residents/<%= resident.id %>/deactivate"
+                        class="inline-form"
+                        onsubmit="return confirm('Deactivate this resident?')"
+                      >
+                        <button type="submit" class="btn btn-sm btn-danger">Deactivate</button>
+                      </form>
+                    <% } %>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </section>
+  </main>
+</body>
+</html>
