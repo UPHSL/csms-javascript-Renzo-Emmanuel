@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submit Service Request - CSMS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="main-nav">
+    <span class="nav-brand">CSMS</span>
+    <div class="nav-links">
+      <a href="/residents" class="nav-link">Residents</a>
+      <a href="/service-requests" class="nav-link nav-link-active">Service Requests</a>
+    </div>
+  </nav>
+
+  <main class="page-container">
+    <div class="page-header">
+      <div>
+        <p class="label">Community Services Management System</p>
+        <h1>Submit Service Request</h1>
+      </div>
+      <div class="header-actions">
+        <a href="/service-requests" class="btn btn-secondary">Back to Service Request Management</a>
+        <a href="/residents" class="btn btn-link">View Residents</a>
+      </div>
+    </div>
+
+    <% if (errors.length > 0) { %>
+      <div class="alert alert-error" role="alert">
+        <strong>Please correct the following errors:</strong>
+        <ul class="error-list">
+          <% errors.forEach(function(field) { %>
+            <li><%= ({
+              residentId:       'Resident ID is required and must be a valid number.',
+              serviceType:      'Service type is required.',
+              description:      'Description is required.',
+              dateRequested:    'Date requested is required and must be a valid date (YYYY-MM-DD).',
+              status:           'Status is invalid.',
+              residentNotFound: 'Resident not found.',
+              residentInactive: 'Inactive Residents cannot submit new Service Requests.'
+            })[field] || (field + ' is invalid.') %></li>
+          <% }); %>
+        </ul>
+      </div>
+    <% } %>
+
+    <section class="card">
+      <form method="POST" action="/service-requests" novalidate>
+
+        <div class="form-group">
+          <label for="residentId" class="form-label">Resident ID</label>
+          <input
+            type="number"
+            id="residentId"
+            name="residentId"
+            value="<%= formData.residentId || '' %>"
+            class="form-input<%= (errors.includes('residentId') || errors.includes('residentNotFound') || errors.includes('residentInactive')) ? ' input-error' : '' %>"
+            min="1"
+          >
+          <% if (errors.includes('residentId')) { %>
+            <span class="field-error">Resident ID is required and must be a valid number.</span>
+          <% } else if (errors.includes('residentNotFound')) { %>
+            <span class="field-error">Resident not found.</span>
+          <% } else if (errors.includes('residentInactive')) { %>
+            <span class="field-error">Inactive Residents cannot submit new Service Requests.</span>
+          <% } %>
+        </div>
+
+        <div class="form-group">
+          <label for="serviceType" class="form-label">Service Type</label>
+          <input
+            type="text"
+            id="serviceType"
+            name="serviceType"
+            value="<%= formData.serviceType || '' %>"
+            class="form-input<%= errors.includes('serviceType') ? ' input-error' : '' %>"
+            placeholder="e.g. Barangay Clearance"
+          >
+          <% if (errors.includes('serviceType')) { %>
+            <span class="field-error">Service type is required.</span>
+          <% } %>
+        </div>
+
+        <div class="form-group">
+          <label for="description" class="form-label">Description</label>
+          <textarea
+            id="description"
+            name="description"
+            rows="4"
+            class="form-input form-textarea<%= errors.includes('description') ? ' input-error' : '' %>"
+            placeholder="Describe the service request..."
+          ><%= formData.description || '' %></textarea>
+          <% if (errors.includes('description')) { %>
+            <span class="field-error">Description is required.</span>
+          <% } %>
+        </div>
+
+        <div class="form-group">
+          <label for="dateRequested" class="form-label">Date Requested</label>
+          <input
+            type="date"
+            id="dateRequested"
+            name="dateRequested"
+            value="<%= formData.dateRequested || '' %>"
+            class="form-input<%= errors.includes('dateRequested') ? ' input-error' : '' %>"
+          >
+          <% if (errors.includes('dateRequested')) { %>
+            <span class="field-error">Date requested is required and must be a valid date.</span>
+          <% } %>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Submit Service Request</button>
+          <a href="/service-requests" class="btn btn-secondary">Cancel</a>
+        </div>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

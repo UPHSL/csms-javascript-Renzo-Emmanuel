@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Service Request Details - CSMS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="main-nav">
+    <span class="nav-brand">CSMS</span>
+    <div class="nav-links">
+      <a href="/residents" class="nav-link">Residents</a>
+      <a href="/service-requests" class="nav-link nav-link-active">Service Requests</a>
+    </div>
+  </nav>
+
+  <main class="page-container">
+    <div class="page-header">
+      <div>
+        <p class="label">Community Services Management System</p>
+        <h1>Service Request Details</h1>
+      </div>
+      <a href="/service-requests" class="btn btn-secondary">Back to Service Request Management</a>
+    </div>
+
+    <% if (successMessage) { %>
+      <div class="alert alert-success" role="alert">
+        <%= successMessage %>
+      </div>
+    <% } %>
+
+    <section class="card">
+      <div class="readonly-fields">
+        <div class="readonly-item">
+          <span class="readonly-label">ID</span>
+          <span class="readonly-value"><%= serviceRequest.id %></span>
+        </div>
+        <div class="readonly-item">
+          <span class="readonly-label">Resident ID</span>
+          <span class="readonly-value"><%= serviceRequest.residentId %></span>
+        </div>
+        <div class="readonly-item">
+          <span class="readonly-label">Status</span>
+          <span class="badge badge-<%= serviceRequest.status.toLowerCase().replace(' ', '-') %>">
+            <%= serviceRequest.status %>
+          </span>
+        </div>
+      </div>
+
+      <div class="detail-fields">
+        <div class="detail-item">
+          <span class="readonly-label">Service Type</span>
+          <span class="detail-value"><%= serviceRequest.serviceType %></span>
+        </div>
+
+        <div class="detail-item">
+          <span class="readonly-label">Date Requested</span>
+          <span class="detail-value"><%= serviceRequest.dateRequested %></span>
+        </div>
+
+        <div class="detail-item detail-item-full">
+          <span class="readonly-label">Description</span>
+          <p class="detail-value detail-description"><%= serviceRequest.description %></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">Actions</h2>
+
+      <% if (serviceRequest.status === 'Pending') { %>
+        <p class="action-hint">This request is <strong>Pending</strong>. You can start processing it or cancel it.</p>
+        <div class="form-actions">
+          <form method="POST" action="/service-requests/<%= serviceRequest.id %>/process" class="inline-form">
+            <button type="submit" class="btn btn-primary">Start Processing</button>
+          </form>
+          <form method="POST" action="/service-requests/<%= serviceRequest.id %>/cancel" class="inline-form"
+                onsubmit="return confirm('Cancel this Service Request?')">
+            <button type="submit" class="btn btn-danger">Cancel</button>
+          </form>
+        </div>
+
+      <% } else if (serviceRequest.status === 'In Progress') { %>
+        <p class="action-hint">This request is <strong>In Progress</strong>. You can mark it as complete or cancel it.</p>
+        <div class="form-actions">
+          <form method="POST" action="/service-requests/<%= serviceRequest.id %>/complete" class="inline-form">
+            <button type="submit" class="btn btn-success">Complete</button>
+          </form>
+          <form method="POST" action="/service-requests/<%= serviceRequest.id %>/cancel" class="inline-form"
+                onsubmit="return confirm('Cancel this Service Request?')">
+            <button type="submit" class="btn btn-danger">Cancel</button>
+          </form>
+        </div>
+
+      <% } else if (serviceRequest.status === 'Completed') { %>
+        <p class="terminal-message terminal-completed">
+          This request has been <strong>Completed</strong>. No further actions are available.
+        </p>
+
+      <% } else if (serviceRequest.status === 'Cancelled') { %>
+        <p class="terminal-message terminal-cancelled">
+          This request has been <strong>Cancelled</strong>. No further actions are available.
+        </p>
+
+      <% } %>
+    </section>
+  </main>
+</body>
+</html>

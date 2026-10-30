@@ -10,6 +10,15 @@ import {
   updateResident,
   deactivateResident
 } from "../controllers/residentController.js";
+import {
+  listServiceRequests,
+  showSubmissionForm,
+  submitServiceRequest,
+  viewServiceRequest,
+  startProcessing,
+  completeRequest,
+  cancelRequest
+} from "../controllers/serviceRequestController.js";
 
 const router = Router();
 
@@ -25,5 +34,16 @@ router.post("/residents", registerResident);
 router.get("/residents/:id/edit", showEditForm);
 router.post("/residents/:id/edit", updateResident);
 router.post("/residents/:id/deactivate", deactivateResident);
+
+// Service Request Management routes (T13).
+// NOTE: /service-requests/new must be declared before /service-requests/:id
+// to prevent Express from treating the literal string "new" as an ID parameter.
+router.get("/service-requests", listServiceRequests);
+router.get("/service-requests/new", showSubmissionForm);
+router.post("/service-requests", submitServiceRequest);
+router.get("/service-requests/:id", viewServiceRequest);
+router.post("/service-requests/:id/process", startProcessing);
+router.post("/service-requests/:id/complete", completeRequest);
+router.post("/service-requests/:id/cancel", cancelRequest);
 
 export default router;

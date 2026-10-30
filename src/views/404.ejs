@@ -7,12 +7,22 @@
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
+  <nav class="main-nav">
+    <span class="nav-brand">CSMS</span>
+    <div class="nav-links">
+      <a href="/residents" class="nav-link">Residents</a>
+      <a href="/service-requests" class="nav-link">Service Requests</a>
+    </div>
+  </nav>
   <main class="container">
     <section class="card">
       <p class="label">Community Services Management System</p>
       <h1>404</h1>
       <p class="message"><%= message %></p>
-      <a href="/residents" class="btn btn-secondary">Back to Resident Management</a>
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1rem;">
+        <a href="/residents" class="btn btn-secondary">Resident Management</a>
+        <a href="/service-requests" class="btn btn-secondary">Service Request Management</a>
+      </div>
     </section>
   </main>
 </body>
