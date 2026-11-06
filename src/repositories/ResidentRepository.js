@@ -177,6 +177,39 @@ export class ResidentRepository {
   }
 
   /**
+   * Count all persisted Residents regardless of status (T14).
+   *
+   * Uses a database-level COUNT aggregate so the application never loads
+   * every row into memory just to count them.
+   *
+   * @returns {number} Total number of Residents in the database.
+   */
+  countAll() {
+    const statement = this.connection.prepare(
+      `SELECT COUNT(*) AS total FROM residents`
+    );
+    const row = statement.get();
+    return Number(row.total);
+  }
+
+  /**
+   * Count Residents whose status matches the given value (T14).
+   *
+   * Uses a parameterized WHERE clause so only the requested status group
+   * is counted at the database level.
+   *
+   * @param {string} status - The exact status value to match (e.g. "Active").
+   * @returns {number} Number of Residents with that status.
+   */
+  countByStatus(status) {
+    const statement = this.connection.prepare(
+      `SELECT COUNT(*) AS total FROM residents WHERE status = ?`
+    );
+    const row = statement.get(status);
+    return Number(row.total);
+  }
+
+  /**
    * Close the underlying database connection.
    *
    * Useful for releasing the SQLite file, especially in tests that create
