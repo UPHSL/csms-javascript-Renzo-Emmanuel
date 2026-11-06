@@ -10,18 +10,28 @@
   <nav class="main-nav">
     <span class="nav-brand">CSMS</span>
     <div class="nav-links">
-      <a href="/residents" class="nav-link nav-link-active">Residents</a>
-      <a href="/service-requests" class="nav-link">Service Requests</a>
+      <a href="/dashboard" class="nav-link">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/></svg>
+        Dashboard
+      </a>
+      <a href="/residents" class="nav-link nav-link-active">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zm8 0a3 3 0 11-6 0 3 3 0 016 0zM2.5 16.5a6.5 6.5 0 0115 0H2.5z"/></svg>
+        Residents
+      </a>
+      <a href="/service-requests" class="nav-link">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm6 3a1 1 0 000 2h2a1 1 0 100-2h-2zm-2 4a1 1 0 011-1h4a1 1 0 110 2H9a1 1 0 01-1-1z" clip-rule="evenodd"/></svg>
+        Service Requests
+      </a>
     </div>
   </nav>
 
   <main class="page-container">
     <div class="page-header">
-      <div>
-        <p class="label">Community Services Management System</p>
+      <div class="page-header-text">
+        <span class="overline">Community Services Management System</span>
         <h1>Register Resident</h1>
       </div>
-      <a href="/residents" class="btn btn-secondary">Back to Resident Management</a>
+      <a href="/residents" class="btn btn-secondary">Back to Residents</a>
     </div>
 
     <% if (errors.length > 0) { %>

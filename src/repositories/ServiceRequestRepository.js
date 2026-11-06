@@ -205,6 +205,61 @@ export class ServiceRequestRepository {
   }
 
   /**
+   * Count all persisted ServiceRequests regardless of status (T14).
+   *
+   * Uses a database-level COUNT aggregate so the application never loads
+   * every row into memory just to count them.
+   *
+   * @returns {number} Total number of ServiceRequests in the database.
+   */
+  countAll() {
+    const statement = this.connection.prepare(
+      `SELECT COUNT(*) AS total FROM service_requests`
+    );
+    const row = statement.get();
+    return Number(row.total);
+  }
+
+  /**
+   * Count ServiceRequests whose status matches the given value (T14).
+   *
+   * Uses a parameterized WHERE clause so only the requested status group
+   * is counted at the database level.
+   *
+   * @param {string} status - The exact status value to match (e.g. "Pending").
+   * @returns {number} Number of ServiceRequests with that status.
+   */
+  countByStatus(status) {
+    const statement = this.connection.prepare(
+      `SELECT COUNT(*) AS total FROM service_requests WHERE status = ?`
+    );
+    const row = statement.get(status);
+    return Number(row.total);
+  }
+
+  /**
+   * Retrieve the most recent ServiceRequests up to the given limit (T14).
+   *
+   * Reuses the ordering established in T11: dateRequested DESC, then id DESC.
+   * The LIMIT clause is applied at the database level so only the requested
+   * number of rows are ever transferred — the application never loads the
+   * full table and slices in memory.
+   *
+   * @param {number} limit - Maximum number of records to return.
+   * @returns {ServiceRequest[]} The most recent ServiceRequests, at most
+   *   `limit` records. Returns an empty array when no records exist.
+   */
+  findRecent(limit) {
+    const statement = this.connection.prepare(
+      `SELECT id, resident_id, service_type, description, date_requested, status
+         FROM service_requests
+        ORDER BY date_requested DESC, id DESC
+        LIMIT ?`
+    );
+    return statement.all(limit).map(row => this.#mapRowToServiceRequest(row));
+  }
+
+  /**
    * Close the underlying database connection.
    *
    * Useful for releasing the SQLite file, especially in tests that create

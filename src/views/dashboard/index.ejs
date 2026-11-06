@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSMS Dashboard</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <nav class="main-nav">
+    <span class="nav-brand">CSMS</span>
+    <div class="nav-links">
+      <a href="/dashboard" class="nav-link nav-link-active">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M2 10a8 8 0 1016 0A8 8 0 002 10zm8-5a1 1 0 011 1v3.586l2.707 2.707a1 1 0 01-1.414 1.414l-3-3A1 1 0 019 10V6a1 1 0 011-1z" clip-rule="evenodd" fill-rule="evenodd"/></svg>
+        Dashboard
+      </a>
+      <a href="/residents" class="nav-link">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zm8 0a3 3 0 11-6 0 3 3 0 016 0zM2.5 16.5a6.5 6.5 0 0115 0H2.5z"/></svg>
+        Residents
+      </a>
+      <a href="/service-requests" class="nav-link">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0h8v12H6V4zm2 3a1 1 0 000 2h4a1 1 0 100-2H8zm0 4a1 1 0 000 2h4a1 1 0 100-2H8z" clip-rule="evenodd"/></svg>
+        Service Requests
+      </a>
+    </div>
+  </nav>
+
+  <main class="page-container">
+
+    <div class="page-header">
+      <div class="page-header-text">
+        <span class="overline">Community Services Management System</span>
+        <h1>CSMS Dashboard</h1>
+      </div>
+    </div>
+
+    <%# ── Resident Summary ──────────────────────────────────────────────── %>
+    <section class="card">
+      <p class="section-heading">
+        <svg style="width:11px;height:11px;vertical-align:-1px;margin-right:4px;" viewBox="0 0 20 20" fill="currentColor"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zm8 0a3 3 0 11-6 0 3 3 0 016 0zM2.5 16.5a6.5 6.5 0 0115 0H2.5z"/></svg>
+        Residents
+      </p>
+      <div class="stats-grid">
+        <div class="stat-card stat-card-highlight">
+          <span class="stat-label">Total</span>
+          <span class="stat-value"><%= residents.total %></span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Active</span>
+          <span class="stat-value"><%= residents.active %></span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Inactive</span>
+          <span class="stat-value"><%= residents.inactive %></span>
+        </div>
+      </div>
+    </section>
+
+    <%# ── Service Request Summary ──────────────────────────────────────── %>
+    <section class="card">
+      <p class="section-heading">
+        <svg style="width:11px;height:11px;vertical-align:-1px;margin-right:4px;" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm6 3a1 1 0 000 2h2a1 1 0 100-2h-2zm-2 4a1 1 0 011-1h4a1 1 0 110 2H9a1 1 0 01-1-1z" clip-rule="evenodd"/></svg>
+        Service Requests
+      </p>
+      <div class="stats-grid">
+        <div class="stat-card stat-card-highlight">
+          <span class="stat-label">Total</span>
+          <span class="stat-value"><%= serviceRequests.total %></span>
+        </div>
+        <div class="stat-card stat-card-open">
+          <span class="stat-label">Open</span>
+          <span class="stat-value"><%= serviceRequests.open %></span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Pending</span>
+          <span class="stat-value"><%= serviceRequests.pending %></span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">In Progress</span>
+          <span class="stat-value"><%= serviceRequests.inProgress %></span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Completed</span>
+          <span class="stat-value"><%= serviceRequests.completed %></span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Cancelled</span>
+          <span class="stat-value"><%= serviceRequests.cancelled %></span>
+        </div>
+      </div>
+      <p class="card-note">Open = Pending + In Progress &nbsp;·&nbsp; Completed and Cancelled are terminal states.</p>
+    </section>
+
+    <%# ── Recent Service Requests ─────────────────────────────────────── %>
+    <section class="card">
+      <p class="section-heading">
+        <svg style="width:11px;height:11px;vertical-align:-1px;margin-right:4px;" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/></svg>
+        Recent Service Requests
+      </p>
+
+      <% if (recentServiceRequests.length === 0) { %>
+        <span class="empty-message">No Service Requests available.</span>
+      <% } else { %>
+        <div class="table-wrapper">
+          <table class="recent-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Resident ID</th>
+                <th>Service Type</th>
+                <th>Date Requested</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% recentServiceRequests.forEach(function(sr) { %>
+                <tr>
+                  <td style="color:var(--text-muted);font-size:0.8rem;font-weight:600;">#<%= sr.id %></td>
+                  <td style="font-weight:600;"><%= sr.residentId %></td>
+                  <td><%= sr.serviceType %></td>
+                  <td style="color:var(--text-secondary);font-size:0.85rem;"><%= sr.dateRequested %></td>
+                  <td>
+                    <span class="badge badge-<%= sr.status.toLowerCase().replace(' ', '-') %>">
+                      <%= sr.status %>
+                    </span>
+                  </td>
+                  <td>
+                    <a href="/service-requests/<%= sr.id %>" class="btn btn-sm btn-secondary">
+                      <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>
+                      View
+                    </a>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </section>
+
+  </main>
+</body>
+</html>

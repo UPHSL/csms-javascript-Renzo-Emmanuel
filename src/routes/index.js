@@ -2,6 +2,7 @@ import { Router } from "express";
 
 import { showHealth } from "../controllers/healthController.js";
 import { showHome } from "../controllers/homeController.js";
+import { showDashboard } from "../controllers/dashboardController.js";
 import {
   listResidents,
   showRegistrationForm,
@@ -24,6 +25,9 @@ const router = Router();
 
 router.get("/", showHome);
 router.get("/health", showHealth);
+
+// Dashboard route (T14).
+router.get("/dashboard", showDashboard);
 
 // Resident Management routes (T12).
 // NOTE: /residents/new must be declared before /residents/:id to prevent
