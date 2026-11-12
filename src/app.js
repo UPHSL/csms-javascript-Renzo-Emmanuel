@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 
 import express from "express";
 
+import { applicationConfig } from "./config/application.js";
 import { notFound } from "./middleware/notFound.js";
 import mainRoutes from "./routes/index.js";
 import { DEFAULT_DATABASE_PATH } from "./database/database.js";
@@ -25,6 +26,11 @@ export function createApp(databasePath = DEFAULT_DATABASE_PATH) {
 
   // Make the database path available to all controllers via req.app.locals.
   app.locals.databasePath = databasePath;
+
+  // Make the application version available to all EJS views via app.locals.
+  // This is the single point where the version is injected into the
+  // presentation layer — no controller needs to pass it individually.
+  app.locals.appVersion = applicationConfig.version;
 
   app.set("views", path.join(currentDirectory, "views"));
   app.set("view engine", "ejs");
