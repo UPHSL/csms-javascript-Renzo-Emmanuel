@@ -934,3 +934,17 @@ dd {
 .recent-table tbody tr:hover td {
   background: var(--surface-alt);
 }
+
+/* ==========================================================================
+   App Footer — Release Version (T16)
+   ========================================================================== */
+
+.app-footer {
+  margin-top: 2.5rem;
+  padding: 1rem 1.5rem;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border-soft);
+  letter-spacing: 0.03em;
+}
